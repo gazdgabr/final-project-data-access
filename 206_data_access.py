@@ -117,17 +117,18 @@ def get_OMDB_info(movie):
 
 
 
-	'''
-	These should be in the movie constructor
-	title = results["Title"]
-	director = results["Director"]
-	IMDB = results["imdbRating"]
-	actors = results["Actors"].split(", ")
-	results = [title, director, IMDB, actors, numLang]
-	#numLang is not right
-	numLang = len(results["Language"])
+#print(get_OMDB_info("waterworld").keys())
 
-	'''
+'''
+These should be in the movie constructor
+title = results["Title"]
+director = results["Director"]
+IMDB = results["imdbRating"]
+actors = results["Actors"].split(", ")
+results = [title, director, IMDB, actors, numLang]
+#numLang is not right
+numLang = len(results["Language"])
+'''
 
 
 
@@ -220,7 +221,7 @@ cur.execute(statement)
 userList = [get_twitter_user("TheRock"), get_twitter_user("RealHughJackman"), get_twitter_user("JordanPeele")]
 
 
-#the following is adapted from lab 3
+#the following is adapted from Project 3
 element_list = []
 for maBoi in userList:
 		user_id_item = maBoi[0]
@@ -255,7 +256,7 @@ get_OMDB_info("the princess bride")
 class DatabaseTests(unittest.TestCase):
 
 	def test_db_tweets(self):
-		conn = sqlite3.connect('final_project_tweets.db')
+		conn = sqlite3.connect('finalproject.db')
 		cur = conn.cursor()
 		cur.execute('SELECT * FROM Tweets');
 		dis = cur.fetchall()
@@ -263,21 +264,44 @@ class DatabaseTests(unittest.TestCase):
 		self.assertTrue(len(dis)>=3)
 
 	def test_db_movies(self):
-		conn = sqlite3.connect('final_project_tweets.db')
+		conn = sqlite3.connect('finalproject|.db')
 		cur = conn.cursor()
 		cur.execute('SELECT * FROM Movies');
 		dat = cur.fetchall()
 		conn.close()
 		self.assertTrue(len(dat)>=3)
-'''
+
 class TwitterTests(unittest.TestCase):
 
-	def test
+	def test_number_of_gotten_tweets(self):
+		self.assertEqual(len(get_twitter_term("SNL")), 10)
+
+	def test_term_caching(self):
+		get_twitter_term("banana")
+		self.assertTrue("banana_tweets" in cache_dictionary)
+
+	def test_user_caching(self):
+		get_twitter_user("POTUS")
+		self.assertTrue("POTUS_user" in cache_dictionary)
 
 class OMDBtests(unittest.TestCase):
 
-	def test
-'''
+	def test_get_OMDB_info_success(self):
+		self.assertEqual(get_OMDB_info("waterworld")["Director"], "Kevin Reynolds")
+
+class Movietests(unittest.TestCase):
+
+	def test_str(self):
+		M = Movie(get_OMDB_info("waterworld"))
+		self.assertEqual(M._str_(), "waterworld")
+
+	def test_infoList(self):
+		M = Movie(get_OMDB_info("waterworld"))
+		self.assertEqual(M.infoList, ["Kevin Reynolds", 6.1, ["Kevin Costner", "Chaim Jeraffi", "Rick Aviles", "R.D. Call"], 1])
+
+
+
+
 
 # Remember to invoke your tests so they will run! (Recommend using the verbosity=2 argument.)
 if __name__ == "__main__":
